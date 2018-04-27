@@ -1,0 +1,537 @@
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["\<\
+This notebook implements the correction method presented in the article \
+\"Errors in energy landscapes measured with particle tracking\", by Micha\
+\[LSlash] Bogdan and Thierry Savin\
+\>", "Subtitle",ExpressionUUID->"5dc562b5-f950-42a0-80e4-c8efff60b6ef"],
+
+Cell[CellGroupData[{
+
+Cell["INPUTS", \
+"Subsection",ExpressionUUID->"58af5176-2df4-4a06-ac1a-f9711d6af957"],
+
+Cell["\<\
+The data file should contain 3 columns, with the first column providing the \
+locations in which the apparent potential is measured/simulated, the second \
+column providing the values of that potential at these locations, and the \
+third column providing the corresponding error bars of the measurement\
+\>", "Item",ExpressionUUID->"41ea7291-ca70-4ab6-8765-c039a7e3466a"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"DataFile", "=", "\"\<Data_fig5a_sig0.1_eps0.3_p10.csv\>\""}], 
+   ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "name", " ", "of", " ", "imported", " ", "file", " ", "with", " ", "data", 
+    " ", "on", " ", "the", " ", 
+    RowBox[{"measured", "/", "simulated"}], " ", "apparent", " ", 
+    "potential"}], " ", "*)"}], "\[IndentingNewLine]"}]], "Input",
+ CellLabel->"In[1]:=",ExpressionUUID->"2d70abc6-5307-4f03-a0d6-044f9830abd1"],
+
+Cell["\<\
+Parameters describing the static and dynamic measurement errors, as defined \
+in the main text\
+\>", "Item",ExpressionUUID->"02d4eba8-9e81-4279-b8ac-c5ba953ae455"],
+
+Cell[BoxData[
+ RowBox[{" ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"\[Sigma]", "=", "0.1"}], ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"shutter", " ", "time"}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"\[Epsilon]", "=", "0.3"}], ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"static", " ", "position", " ", "uncertainty"}], " ", "*)"}], 
+   "\[IndentingNewLine]"}]}]], "Input",
+ CellLabel->"In[2]:=",ExpressionUUID->"a51d3b46-7934-4ee6-a60a-d0ad7ad058b3"],
+
+Cell["\<\
+Degree of the polynomial fit; for now, it must be set by inspection (see main \
+text)\
+\>", "Item",ExpressionUUID->"e3b3ec98-8472-4fda-adce-2f4d69702d85"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"p", "=", "10"}], ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "degree", " ", "of", " ", "the", " ", "polynomial", " ", "fitting"}], " ", 
+   "*)"}], "\[IndentingNewLine]"}]], "Input",
+ CellLabel->"In[4]:=",ExpressionUUID->"2832dca5-50e7-4f84-821b-03b91480b6b5"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["CALCULATIONS", \
+"Subsection",ExpressionUUID->"0799fb24-552e-4e44-9d28-fba77689b403"],
+
+Cell["Reading the input data file", \
+"Item",ExpressionUUID->"75e28b51-04f9-4b80-acb0-9d958b2e335c"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"SetDirectory", "[", 
+    RowBox[{"FileNameJoin", "[", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"NotebookDirectory", "[", "]"}], ",", "\"\<Examples\>\""}], 
+      "}"}], "]"}], "]"}], ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "the", " ", "data", " ", "file", " ", "must", " ", "be", " ", "in", " ", 
+    "the", " ", "folder", " ", "\"\<Examples\>\"", " ", "in", " ", "the", " ", 
+    RowBox[{"notebook", "'"}], "s", " ", "directory"}], " ", 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Data", "=", 
+   RowBox[{"Import", "[", "DataFile", "]"}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "the", " ", "data", " ", "file", " ", "is", " ", "imported", " ", "here"}],
+    " ", "*)"}], 
+  "\[IndentingNewLine]"}]}], \
+"Input",ExpressionUUID->"ccf762a3-3255-4241-9dbe-17138b9dd5a9"],
+
+Cell["The data is fitted to a polynomial of degree p", \
+"Item",ExpressionUUID->"dfd18f44-8831-4c4e-881e-9b2b566feda9"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"ApparentCoefficients", "=", 
+    RowBox[{
+     RowBox[{"LinearModelFit", "[", 
+      RowBox[{
+       RowBox[{"Data", "[", 
+        RowBox[{"[", 
+         RowBox[{"All", ",", 
+          RowBox[{"1", ";;", "2"}]}], "]"}], "]"}], ",", 
+       RowBox[{"Table", "[", 
+        RowBox[{
+         SuperscriptBox["x", "k"], ",", 
+         RowBox[{"{", 
+          RowBox[{"k", ",", "0", ",", "p"}], "}"}]}], "]"}], ",", "x", ",", 
+       RowBox[{"Weights", "\[Rule]", 
+        RowBox[{"1", "/", 
+         SuperscriptBox[
+          RowBox[{"Data", "[", 
+           RowBox[{"[", 
+            RowBox[{"All", ",", "3"}], "]"}], "]"}], "2"]}]}]}], "]"}], "[", 
+     "\"\<BestFitParameters\>\"", "]"}]}], ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"polynomial", " ", "fitting"}], " ", 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Do", "[", 
+    RowBox[{
+     RowBox[{
+      SubscriptBox[
+       OverscriptBox["c", "_"], "k"], "=", 
+      RowBox[{"ApparentCoefficients", "[", 
+       RowBox[{"[", 
+        RowBox[{"k", "+", "1"}], "]"}], "]"}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"k", ",", "0", ",", "p"}], "}"}]}], "]"}], ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"{", 
+     SubscriptBox[
+      OverscriptBox["c", "_"], "k"], "}"}], " ", "are", " ", "the", " ", 
+    "fitting", " ", "coefficients"}], " ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     OverscriptBox["v", "_"], "[", "x_", "]"}], ":=", 
+    RowBox[{
+     UnderoverscriptBox["\[Sum]", 
+      RowBox[{"k", "=", "0"}], "p"], 
+     RowBox[{
+      SubscriptBox[
+       OverscriptBox["c", "_"], "k"], 
+      SuperscriptBox["x", "k"]}]}]}], ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+     OverscriptBox["v", "_"], " ", "is", " ", "the", " ", "apparent", " ", 
+     "potential"}], ",", " ", 
+    RowBox[{
+    "to", " ", "be", " ", "plotted", " ", "later", " ", "for", " ", 
+     "comparison"}]}], " ", "*)"}], " "}], "\[IndentingNewLine]"}], "Input",
+ CellLabel->"In[7]:=",ExpressionUUID->"e12e93fc-0071-4f3e-a011-9707851fe732"],
+
+Cell["\<\
+The coefficients for the corrected potential are obtained using the \
+transformation given by Eq. (15) in the main text\
+\>", "Item",ExpressionUUID->"0f5a06fb-3619-4c9f-bbda-de2b52614109"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"v", "[", "x_", "]"}], ":=", 
+    RowBox[{
+     UnderoverscriptBox["\[Sum]", 
+      RowBox[{"k", "=", "0"}], "p"], 
+     RowBox[{
+      SubscriptBox["c", "k"], 
+      SuperscriptBox["x", "k"]}]}]}], ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+    "v", " ", "is", " ", "the", " ", "candidate", " ", "true", " ", 
+     "potential", " ", "to", " ", "be", " ", "reconstructed"}], ";", " ", 
+    RowBox[{
+     RowBox[{"{", 
+      SubscriptBox["c", "k"], "}"}], " ", "are", " ", "the", " ", 
+     "polynomial", " ", "coefficients"}]}], "  ", 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"ApparentToTrue", "=", 
+    RowBox[{"CoefficientList", "[", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"v", "[", "x", "]"}], "+", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          SuperscriptBox["\[Epsilon]", "2"], "-", 
+          FractionBox["\[Sigma]", "3"]}], ")"}], " ", 
+        FractionBox[
+         RowBox[{
+          RowBox[{
+           SuperscriptBox["v", "\[Prime]\[Prime]",
+            MultilineFunction->None], "[", "x", "]"}], "-", 
+          SuperscriptBox[
+           RowBox[{
+            SuperscriptBox["v", "\[Prime]",
+             MultilineFunction->None], "[", "x", "]"}], "2"]}], "2"]}], "+", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"-", "6"}], " ", 
+           SuperscriptBox["\[Epsilon]", "4"]}], "+", 
+          RowBox[{"4", " ", 
+           SuperscriptBox["\[Epsilon]", "2"], " ", "\[Sigma]"}], "+", 
+          FractionBox[
+           SuperscriptBox["\[Sigma]", "2"], "3"]}], ")"}], " ", 
+        FractionBox[
+         SuperscriptBox[
+          RowBox[{
+           SuperscriptBox["v", "\[Prime]\[Prime]",
+            MultilineFunction->None], "[", "x", "]"}], "2"], "24"]}], "-", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"-", "12"}], " ", 
+           SuperscriptBox["\[Epsilon]", "4"]}], "+", 
+          RowBox[{"8", " ", 
+           SuperscriptBox["\[Epsilon]", "2"], " ", "\[Sigma]"}], "-", 
+          FractionBox[
+           SuperscriptBox["\[Sigma]", "2"], "3"]}], ")"}], " ", 
+        FractionBox[
+         RowBox[{
+          SuperscriptBox[
+           RowBox[{
+            SuperscriptBox["v", "\[Prime]",
+             MultilineFunction->None], "[", "x", "]"}], "2"], " ", 
+          RowBox[{
+           SuperscriptBox["v", "\[Prime]\[Prime]",
+            MultilineFunction->None], "[", "x", "]"}]}], "24"]}], "+", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"-", "60"}], " ", 
+           SuperscriptBox["\[Epsilon]", "6"]}], "+", 
+          RowBox[{"60", " ", 
+           SuperscriptBox["\[Epsilon]", "4"], " ", "\[Sigma]"}], "-", 
+          RowBox[{"10", " ", 
+           SuperscriptBox["\[Epsilon]", "2"], " ", 
+           SuperscriptBox["\[Sigma]", "2"]}], "-", 
+          FractionBox[
+           SuperscriptBox["\[Sigma]", "3"], "9"]}], ")"}], " ", 
+        FractionBox[
+         RowBox[{
+          SuperscriptBox[
+           RowBox[{
+            SuperscriptBox["v", "\[Prime]",
+             MultilineFunction->None], "[", "x", "]"}], "2"], " ", 
+          SuperscriptBox[
+           RowBox[{
+            SuperscriptBox["v", "\[Prime]\[Prime]",
+             MultilineFunction->None], "[", "x", "]"}], "2"]}], "120"]}], "+",
+        "c"}], " ", 
+      RowBox[{"(*", " ", 
+       RowBox[{"Eq", ".", " ", 
+        RowBox[{"(", "15", ")"}]}], " ", "*)"}], "\[IndentingNewLine]", ",", 
+      "x"}], "]"}]}], ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "polynomial", " ", "coefficients", " ", "of", " ", "the", " ", "true", " ",
+     "potential", " ", "are", " ", "obtained", " ", "using", " ", 
+    RowBox[{"Eq", ".", " ", 
+     RowBox[{"(", "15", ")"}]}], " ", "of", " ", "the", " ", "main", " ", 
+    "text"}], " ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Do", "[", 
+    RowBox[{
+     RowBox[{
+      SubscriptBox["f", "k"], "=", 
+      RowBox[{"ApparentToTrue", "[", 
+       RowBox[{"[", 
+        RowBox[{"k", "+", "1"}], "]"}], "]"}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"k", ",", "0", ",", "p"}], "}"}]}], "]"}], ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"the", " ", "functions", " ", 
+    RowBox[{"{", 
+     SubscriptBox["f", "k"], "}"}], " ", "in", " ", 
+    RowBox[{"Eqs", ".", " ", 
+     RowBox[{"(", "16", ")"}]}]}], " ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Equations", "=", 
+    RowBox[{"Join", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        SubscriptBox["c", "0"], "==", 
+        SubscriptBox[
+         OverscriptBox["c", "_"], "0"]}], "}"}], ",", 
+      RowBox[{"Table", "[", 
+       RowBox[{
+        RowBox[{
+         SubscriptBox["f", "k"], "\[Equal]", 
+         SubscriptBox[
+          OverscriptBox["c", "_"], "k"]}], ",", 
+        RowBox[{"{", 
+         RowBox[{"k", ",", "0", ",", "p"}], "}"}]}], "]"}]}], "]"}]}], ";"}], 
+  " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"system", " ", "of", " ", "equations"}], ",", " ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"Eqs", ".", " ", 
+       RowBox[{"(", "16", ")"}]}], " ", "of", " ", "the", " ", "main", " ", 
+      "text"}], ";", " ", 
+     RowBox[{
+      RowBox[{"we", " ", "choose", " ", 
+       RowBox[{"v", "[", "0", "]"}]}], "=", 
+      RowBox[{
+       RowBox[{
+        OverscriptBox["v", "_"], "[", "0", "]"}], " ", "here"}]}]}]}], " ", 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"StartingPoints", "=", " ", 
+    RowBox[{"Join", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"{", 
+        RowBox[{"c", ",", "0"}], "}"}], "}"}], ",", 
+      RowBox[{"Table", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          SubscriptBox["c", "k"], ",", "0"}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"k", ",", "0", ",", "p"}], "}"}]}], "]"}]}], "]"}]}], ";"}], 
+  " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "starting", " ", "points", " ", "set", " ", "to", " ", "0", " ", "to", " ",
+     "solve", " ", "the", " ", "system"}], " ", 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"CorrectedCoefficients", "=", 
+    RowBox[{"FindRoot", "[", 
+     RowBox[{"Equations", ",", "StartingPoints"}], "]"}]}], ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "numerical", " ", "solutions", " ", "to", " ", "the", " ", "system", " ", 
+    "of", " ", "equations"}], " ", "*)"}]}], "\[IndentingNewLine]"}], "Input",
+ 
+ CellLabel->
+  "In[10]:=",ExpressionUUID->"820c7ceb-f119-4b11-9280-57231ee8737e"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["OUTPUTS", \
+"Subsection",ExpressionUUID->"7e62d817-43ed-44f5-a4b4-e34d3fa2bf34"],
+
+Cell["\<\
+Plot of the reconstructed potential and of the measured apparent potential \
+for comparison\
+\>", "Item",ExpressionUUID->"180af898-e4c8-4c10-9356-65867b832eb7"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"PlotData", " ", "=", " ", 
+    RowBox[{"ListPlot", "[", 
+     RowBox[{
+      RowBox[{"Data", "[", 
+       RowBox[{"[", 
+        RowBox[{"All", ",", 
+         RowBox[{"1", ";;", "2"}]}], "]"}], "]"}], ",", 
+      RowBox[{"PlotMarkers", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{"\"\<\[FilledCircle]\>\"", ",", "7"}], "}"}]}], ",", 
+      RowBox[{"PlotStyle", "\[Rule]", "Gray"}], ",", 
+      RowBox[{"PlotRange", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"-", "0.5"}], ",", "1"}], "}"}]}], "}"}]}]}], "]"}]}], 
+   ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"original", " ", "data"}], " ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"PlotFits", " ", "=", " ", 
+    RowBox[{"Plot", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{
+         OverscriptBox["v", "_"], "[", "x", "]"}], ",", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"v", "[", "x", "]"}], "/.", "CorrectedCoefficients"}], 
+         ")"}]}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"x", ",", 
+        RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
+      RowBox[{"PlotStyle", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"Gray", ",", "Dashed"}], "}"}], ",", "Orange"}], "}"}]}], 
+      ",", 
+      RowBox[{"PlotRange", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"-", "0.5"}], ",", "1"}], "}"}]}], "}"}]}]}], "]"}]}], 
+   ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "fit", " ", "of", " ", "the", " ", "data", " ", "and", " ", "the", " ", 
+    "reconstructed", " ", "potential"}], " ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Legend", " ", "=", " ", 
+    RowBox[{"LineLegend", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"Gray", ",", 
+        RowBox[{"{", 
+         RowBox[{"Gray", ",", "Dashed"}], "}"}], ",", "Orange"}], "}"}], ",", 
+      
+      RowBox[{"{", 
+       RowBox[{
+       "\"\<Apparent potential \!\(\*OverscriptBox[StyleBox[\"V\",FontSlant->\
+\"Italic\"], \"_\"]\) (data)\>\"", ",", 
+        "\"\<Apparent potential \
+\!\(\*OverscriptBox[StyleBox[\"V\",FontSlant->\"Italic\"], \"_\"]\) \
+(fit)\>\"", ",", 
+        "\"\<Reconstructed potential \!\(\*StyleBox[\"V\",FontSlant->\"Italic\
+\"]\)\>\""}], "}"}], ",", 
+      RowBox[{"Joined", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{"False", ",", "True", ",", "True"}], "}"}]}], ",", 
+      RowBox[{"LegendMarkers", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<\[FilledCircle]\>\"", ",", "7"}], "}"}], ",", "None", 
+         ",", "None"}], "}"}]}]}], "]"}]}], ";"}], " ", 
+  RowBox[{"(*", " ", "legend", " ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Legended", "[", 
+   RowBox[{
+    RowBox[{"Show", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"PlotData", ",", "PlotFits"}], "}"}], ",", 
+      RowBox[{"AxesLabel", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{
+        "\"\<\!\(\*StyleBox[\"x\",FontSlant->\"Italic\"]\)\>\"", ",", 
+         "\"\<\!\(\*StyleBox[OverscriptBox[StyleBox[\"V\",FontSlant->\"Italic\
+\"], \"_\"],FontSlant->\"Italic\"]\)\!\(\*StyleBox[\",\",FontSlant->\"Italic\"\
+]\)\!\(\*StyleBox[\" \
+\",FontSlant->\"Italic\"]\)\!\(\*StyleBox[\"V\",FontSlant->\"Italic\"]\)\>\""}\
+], "}"}]}], ",", 
+      RowBox[{"AspectRatio", "\[Rule]", "1"}]}], "]"}], ",", "Legend"}], 
+   "]"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"show", " ", "the", " ", "plot"}], " ", 
+   "*)"}]}], "\[IndentingNewLine]"}], "Input",
+ CellLabel->"In[16]:=",ExpressionUUID->"5b4d7e5c-1f55-428a-b939-f4785fced8ed"],
+
+Cell["Polynomial coefficients of the reconstructed potential", \
+"Item",ExpressionUUID->"81f340f6-d965-49ff-a730-017d4d0830ec"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"TableForm", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Table", "[", 
+      RowBox[{
+       SubscriptBox["c", "k"], ",", 
+       RowBox[{"{", 
+        RowBox[{"k", ",", "0", ",", "p"}], "}"}]}], "]"}], "/.", 
+     "CorrectedCoefficients"}], ",", " ", 
+    RowBox[{"TableHeadings", "\[Rule]", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Table", "[", 
+        RowBox[{
+         SubscriptBox["\"\<c\>\"", "k"], ",", 
+         RowBox[{"{", 
+          RowBox[{"k", ",", "0", ",", "p"}], "}"}]}], "]"}], ",", "None"}], 
+      "}"}]}]}], "]"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"display", " ", "the", " ", "coefficients"}], " ", "*)"}], 
+  "\[IndentingNewLine]"}]], "Input",
+ CellLabel->
+  "In[20]:=",ExpressionUUID->"d3354fec-b07e-430a-9a95-fbb71f283e2d"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1903, 1162},
+WindowMargins->{{131, Automatic}, {Automatic, 0}},
+PrivateNotebookOptions->{"FileOutlineCache"->False},
+TrackCellChangeTimes->False,
+FrontEndVersion->"11.3 for Mac OS X x86 (32-bit, 64-bit Kernel) (March 5, \
+2018)",
+StyleDefinitions->"Default.nb"
+]
+
