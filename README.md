@@ -30,9 +30,9 @@ http://dx.doi.org/10.1016/.../
 
 * Wolfram Mathematica is required to execute the notebook. It can be obtained from http://www.wolfram.com/mathematica/.
 * The input data files should be provided as three columns .csv files:
- +  1st column: locations at which the apparent potential is measured;
- +  2nd column: values of the measured potential;
- +  3rd column: error bars on the potential's measurements.
+  +  1st column: locations at which the apparent potential is measured;
+  +  2nd column: values of the measured potential;
+  +  3rd column: error bars on the potential's measurements.
 
 ---
 ## Files
