@@ -7,20 +7,20 @@ A notebook implementing the algorithm to correct an energy landscape, as measure
 ## Citation
 
 **Errors in energy landscapes measured with particle tracking**  
-Michał Bogdan and Thierry Savin, _Biophys. J._ (2018)  
-http://dx.doi.org/10.1016/.../
+Michał J. Bogdan and Thierry Savin, _Biophys. J._ **115**:139-149 (2018)  
+http://doi.org/10.1016/j.bpj.2018.05.035
 
 ```
-@article{Bogdan:2018
-  author = {Bogdan, Micha\l{} and Savin, Thierry},
+@article{Bogdan:2018,
+  author = {Bogdan, Micha\l{} J. and Savin, Thierry},
   title = {Errors in energy landscapes measured with particle tracking},
-  volume = {},
-  number = {},
-  pages = {},
+  volume = {115},
+  number = {1},
+  pages = {139--149},
   year = {2018},
-  doi = {},
-  URL = {},
-  eprint = {},
+  doi = {10.1016/j.bpj.2018.05.035},
+  URL = {http://doi.org/10.1016/j.bpj.2018.05.035},
+  eprint = {http://www.cell.com/biophysj/fulltext/S0006-3495(18)30675-1},
   journal = {Biophysical Journal}
 }
 ```
@@ -28,11 +28,11 @@ http://dx.doi.org/10.1016/.../
 ---
 ## Requirements
 
-* Wolfram Mathematica is required to execute the notebook. It can be obtained from http://www.wolfram.com/mathematica/.
+* Wolfram Mathematica is required to execute the notebook. It can be obtained from http://www.wolfram.com/mathematica.
 * The input data files should be provided as three columns .csv files:
-  +  1st column: locations at which the apparent potential is measured;
-  +  2nd column: values of the measured potential;
-  +  3rd column: error bars on the potential's measurements.
+ +  1st column: locations at which the apparent potential is measured;
+ +  2nd column: values of the measured potential;
+ +  3rd column: error bars on the potential's measurements.
 
 ---
 ## Files
