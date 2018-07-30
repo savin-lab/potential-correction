@@ -38,7 +38,7 @@ http://doi.org/10.1016/j.bpj.2018.05.035
 ## Files
 
   + "`Potential-Correction.nb`" is a Mathematica notebook implementing the true potential reconstruction algorithm using Eqs. (15) & (16) of the article referenced above;
-  + "`Examples/`" contains 8 example data files, with the simulation results used to generate Fig. 5 of the article; the names of the files provide information about which of the curves the data refers to: for example, "`Data_fig5a_sig0.1_eps0.3_p10.csv`" contains the data for Fig. 5a, with the dimensionless shutter time `sigma=0.3`, the dimensionless static localisation uncertainty `epsilon=0.3`, and the optimal polynomial order of potential fitting `p=10`.
+  + "`Examples/`" contains 8 example data files, with the simulation results used to generate Fig. 5 of the article; the names of the files provide information about which of the curves the data refers to: for example, "`Data_fig5a_sig0.1_eps0.3_p10.csv`" contains the data for Fig. 5a, with the dimensionless shutter time `sigma=0.1`, the dimensionless static localisation uncertainty `epsilon=0.3`, and the optimal polynomial order of potential fitting `p=10`.
 
 ---
 ## Structure of the notebook
